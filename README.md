@@ -8,7 +8,7 @@ em memória compartilhada (OpenMP) e memória distribuída (MPI).
 ## Estrutura
 
 ```
-mergesort-paralelo-cco085/
+mergesort-paralelo/
 ├── .devcontainer/ ambiente da disciplina (VS Code → Reopen in Container)
 ├── sequencial/    baseline do professor (cópia sem alteração de lógica)
 ├── openmp/        versão OpenMP              (Marco 2 — a fazer)
