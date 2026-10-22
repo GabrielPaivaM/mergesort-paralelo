@@ -1,0 +1,6 @@
+# Scripts e Makefiles rodam no Linux do contêiner: se o Git do Windows
+# converter para CRLF, o bash e o make quebram ("\r: command not found").
+*.sh      text eol=lf
+Makefile  text eol=lf
+*.cpp     text eol=lf
+*.py      text eol=lf
