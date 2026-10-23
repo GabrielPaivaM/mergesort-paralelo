@@ -5,18 +5,28 @@ Programação Paralela · IESB 2026/2 · Prof. Rodrigo Gonçalves
 Paralelização do mergesort sequencial de referência (`07_mergesort.cpp`, fornecido pelo professor)
 em memória compartilhada (OpenMP) e memória distribuída (MPI).
 
+## Organização do trio
+
+Comece por [`ORGANIZACAO.md`](ORGANIZACAO.md) (papéis, fluxo de Git, cronograma) e pelo
+[`docs/contrato.md`](docs/contrato.md) (o que as três versões têm em comum). Cada frente tem
+seu guia em `docs/`. Quem usar IA no repositório: as regras estão em [`AGENTS.md`](AGENTS.md).
+
 ## Estrutura
 
 ```
 mergesort-paralelo/
 ├── .devcontainer/ ambiente da disciplina (VS Code → Reopen in Container)
-├── sequencial/    baseline do professor (cópia sem alteração de lógica)
+├── sequencial/    baseline do professor (cópia sem alteração de lógica) e gabarito
+├── comum/         código compartilhado por OpenMP e MPI (docs/contrato.md)
 ├── openmp/        versão OpenMP              (Marco 2 — a fazer)
 ├── mpi/           versão MPI                 (Marco 2 — a fazer)
 ├── scripts/       coleta de tempos em CSV e geração de gráficos
 ├── resultados/    CSVs gerados pelos scripts
 ├── graficos/      gráficos de tempo, speedup e eficiência
+├── docs/          contrato comum e guia de cada frente
 ├── Makefile
+├── ORGANIZACAO.md guia do trio
+├── AGENTS.md      instruções para ferramentas de IA
 └── AUTORES.md     frente de cada integrante
 ```
 

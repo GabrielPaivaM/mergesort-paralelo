@@ -19,6 +19,8 @@ BIN = bin
 SEQ_SRC = $(wildcard sequencial/*.cpp)
 OMP_SRC = $(wildcard openmp/*.cpp)
 MPI_SRC = $(wildcard mpi/*.cpp)
+# Código compartilhado (docs/contrato.md): se mudar, tudo é recompilado.
+COMUM   = $(wildcard comum/*.hpp)
 
 SEQ_BIN = $(patsubst sequencial/%.cpp,$(BIN)/%,$(SEQ_SRC))
 OMP_BIN = $(patsubst openmp/%.cpp,$(BIN)/%,$(OMP_SRC))
@@ -34,13 +36,13 @@ perfil: $(BIN)/mergesort_seq_pg
 $(BIN):
 	mkdir -p $(BIN)
 
-$(BIN)/%: sequencial/%.cpp | $(BIN)
+$(BIN)/%: sequencial/%.cpp $(COMUM) | $(BIN)
 	$(CXX) $(CXXFLAGS) -o $@ $<
 
-$(BIN)/%: openmp/%.cpp | $(BIN)
+$(BIN)/%: openmp/%.cpp $(COMUM) | $(BIN)
 	$(CXX) $(CXXFLAGS) $(OMPFLAG) -o $@ $<
 
-$(BIN)/%: mpi/%.cpp | $(BIN)
+$(BIN)/%: mpi/%.cpp $(COMUM) | $(BIN)
 	$(MPICXX) $(CXXFLAGS) -o $@ $<
 
 # Sem estas flags o -O2 "cola" merge() dentro de msort() (inlining) e cria

@@ -1,0 +1,111 @@
+# Contrato comum das três versões
+
+Este arquivo é a fonte única da verdade para o que as três versões precisam ter em comum. Ele existe para que as medições sejam comparáveis e para que "o resultado é o mesmo do baseline" possa ser verificado por um número, não por opinião.
+
+**Mudanças neste arquivo só por PR aprovado pelos três.**
+
+Status: **proposta** (a ser fechada na reunião da semana 1). Marque cada item como decidido ao fechar.
+
+## 1. Arquivos
+
+```
+sequencial/mergesort_seq.cpp   baseline do professor — NÃO ALTERAR
+comum/mergesort_comum.hpp      código compartilhado por OpenMP e MPI
+sequencial/gabarito.cpp        roda a lógica do baseline e imprime o checksum de referência
+openmp/mergesort_omp.cpp       versão OpenMP
+mpi/mergesort_mpi.cpp          versão MPI
+scripts/medir.sh               roda tudo e gera os CSVs
+scripts/graficos.py            lê os CSVs e gera os gráficos
+resultados/*.csv               dados brutos de medição
+graficos/*.png                 gráficos gerados
+```
+
+## 2. Código comum (`comum/mergesort_comum.hpp`)
+
+- [ ] `gerar_entrada(n)`: o **mesmo** gerador do baseline, linha por linha.
+  ```cpp
+  uint64_t s = 12345;
+  for (int i = 0; i < n; i++) { s = s*6364136223846793005ULL + 1; a[i] = (int)(s >> 33); }
+  ```
+- [ ] `merge(a, tmp, lo, mid, hi)` e `msort(a, tmp, lo, hi)`: copiados do baseline **sem alteração de lógica**.
+- [ ] `agora()`: `clock_gettime(CLOCK_MONOTONIC)`, como no baseline. (O MPI pode usar `MPI_Wtime()`; os dois medem tempo de parede.)
+- [ ] `checksum(a, n)`: definido na seção 3.
+- [ ] `verifica_ordenado(a, n)`: mesmo teste do baseline.
+
+Por que um arquivo comum: se cada frente copiar o `merge` por conta própria, uma diferença de resultado pode vir de um erro de cópia e não da paralelização. Com um arquivo só, a única coisa que muda entre as versões é a parte paralela.
+
+## 3. Validação
+
+`ordenado=SIM` não basta: um vetor que perdeu ou duplicou elementos (erro típico de índice no MPI) ainda pode sair ordenado. Como o vetor ordenado é **único** para uma entrada, usamos um checksum que depende de **valor e posição**:
+
+```cpp
+uint64_t checksum(const std::vector<int>& a) {
+    uint64_t c = 0;
+    for (size_t i = 0; i < a.size(); i++) c += (uint64_t)i * (uint64_t)(uint32_t)a[i];
+    return c;   // estoura e "dá a volta" módulo 2^64 — de propósito
+}
+```
+
+- A soma em `uint64_t` dá a volta módulo 2⁶⁴. Isso é determinístico e a soma continua **associativa e comutativa**, então o resultado é o mesmo em qualquer ordem: pode ser calculado com `reduction(+:c)` no OpenMP ou com `MPI_Reduce` no MPI.
+- O valor de referência vem do `sequencial/gabarito.cpp`: mesma entrada, mesmo `msort`, imprime o checksum.
+- [ ] Gabarito registrado aqui para os tamanhos oficiais:
+
+| n | checksum de referência |
+|---|---|
+| 5000000 | _(preencher)_ |
+| 20000000 | _(preencher)_ |
+| 80000000 | _(preencher)_ |
+
+O cálculo do checksum fica **fora** do cronômetro, como a verificação do baseline.
+
+## 4. Linha de comando e saída
+
+```bash
+./bin/gabarito N
+./bin/mergesort_omp N THREADS [CUTOFF]
+mpirun -np P ./bin/mergesort_mpi N
+```
+
+Cada execução imprime **uma** linha neste formato (é o que o `medir.sh` lê):
+
+```
+versao=omp n=20000000 p=4 ordenado=SIM checksum=1234567890 tempo=0.812345
+```
+
+- `versao`: `seq`, `omp` ou `mpi`
+- `p`: threads (OpenMP), processos (MPI) ou 1 (sequencial)
+- `tempo`: segundos, 6 casas decimais
+- Saídas extras (por exemplo, tempo de comunicação do MPI) vão em campos adicionais **depois** de `tempo=`: `... tempo=0.9 t_comunicacao=0.3`
+
+## 5. O que entra no cronômetro
+
+| Versão | Começa | Termina |
+|---|---|---|
+| seq | antes do `msort` | depois do `msort` |
+| omp | antes da região paralela | depois da região paralela |
+| mpi | após `MPI_Barrier`, antes da distribuição | vetor final completo no rank 0. Reportar o **máximo** entre os processos (`MPI_Reduce` com `MPI_MAX`) |
+
+Fora do cronômetro em todas: gerar a entrada, alocar vetores, verificar e calcular o checksum.
+
+No MPI, a **distribuição e a junção entram** no tempo: elas são custo de paralelizar, e escondê-las inflaria o speedup.
+
+## 6. Medição
+
+- [ ] Compilação: `-O2` (Makefile).
+- [ ] Repetições: 5 por configuração; descarta a 1ª (aquecimento); usa a **mediana** das 4 restantes.
+- [ ] Máquina: todas as medições finais na **mesma** máquina, com mais de um núcleo. Registrar `nproc`, modelo da CPU (`lscpu`) e data no README.
+- [ ] Threads/processos: 1, 2, 4, 8 — só até `nproc` (acima disso os núcleos são divididos e o tempo piora por motivo alheio ao algoritmo).
+- [ ] Escalabilidade forte: `n = 20000000` fixo.
+- [ ] Escalabilidade fraca: `n = 5000000 × p`.
+- [ ] Três tamanhos para o baseline: 5 M, 20 M, 80 M.
+
+## 7. CSV
+
+Um arquivo por experimento, sempre com cabeçalho:
+
+```
+versao,n,p,repeticao,tempo_s
+omp,20000000,4,1,0.812345
+```
+
+Arquivos: `resultados/baseline.csv`, `resultados/forte.csv`, `resultados/fraca.csv`, `resultados/cutoff.csv`, `resultados/mpi_comunicacao.csv` (com coluna extra `t_comunicacao_s`).
