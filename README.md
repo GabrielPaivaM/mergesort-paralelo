@@ -60,8 +60,12 @@ mesma entrada (semente fixa 12345), com qualquer número de threads/processos.
 
 ## Perfilamento
 
+Análise completa (perfil, tempo por nível da árvore e Lei de Amdahl) em
+[`docs/analise_baseline.md`](docs/analise_baseline.md).
+
 ```bash
 make perfil
 ./bin/mergesort_seq_pg 20000000
 gprof ./bin/mergesort_seq_pg gmon.out | head -20
+./bin/perfil_trechos 20000000     # tempo por trecho e por nível da árvore
 ```
