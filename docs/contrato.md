@@ -93,13 +93,13 @@ No MPI, a **distribuição e a junção entram** no tempo: elas são custo de pa
 
 ## 6. Medição
 
-- [ ] Compilação: `-O2` (Makefile).
-- [ ] Repetições: 5 por configuração; descarta a 1ª (aquecimento); usa a **mediana** das 4 restantes.
-- [ ] Máquina: todas as medições finais na **mesma** máquina, com mais de um núcleo. Registrar `nproc`, modelo da CPU (`lscpu`) e data no README.
-- [ ] Threads/processos: 1, 2, 4, 8 — só até `nproc` (acima disso os núcleos são divididos e o tempo piora por motivo alheio ao algoritmo).
-- [ ] Escalabilidade forte: `n = 20000000` fixo.
-- [ ] Escalabilidade fraca: `n = 5000000 × p`.
-- [ ] Três tamanhos para o baseline: 5 M, 20 M, 80 M.
+- [x] Compilação: `-O2` (Makefile; o `medir.sh` chama `make` antes de medir).
+- [x] Repetições: 5 por configuração; descarta a 1ª (aquecimento); usa a **mediana** das 4 restantes.
+- [x] Máquina (o `medir.sh` grava `resultados/maquina.txt`): todas as medições finais na **mesma** máquina, com mais de um núcleo. Registrar `nproc`, modelo da CPU (`lscpu`) e data no README.
+- [x] Threads/processos: 1, 2, 4, 8 — só até `nproc` (acima disso os núcleos são divididos e o tempo piora por motivo alheio ao algoritmo).
+- [x] Escalabilidade forte: `n = 20000000` fixo.
+- [x] Escalabilidade fraca: `n = 5000000 × p`.
+- [x] Três tamanhos para o baseline: 5 M, 20 M, 80 M.
 
 ## 7. CSV
 

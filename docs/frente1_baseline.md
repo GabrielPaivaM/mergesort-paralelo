@@ -8,11 +8,11 @@ Estabelecer o tempo de referência, mostrar onde o programa gasta tempo, prever 
 
 ## Entregas
 
-- [ ] Tabela do baseline para 5 M, 20 M e 80 M, com o protocolo do contrato.
+- [ ] Tabela do baseline para 5 M, 20 M e 80 M, com o protocolo do contrato. *(preliminar em `resultados/baseline.csv`, máquina de nuvem de 4 núcleos; refazer na máquina final)*
 - [ ] Tabela de perfil (gprof): % de tempo por função.
 - [ ] Estimativa de Amdahl com o modelo da árvore (aula 3) para p = 2, 4, 8 e o teto S(∞).
-- [ ] `sequencial/gabarito.cpp` e os checksums de referência registrados em `docs/contrato.md`.
-- [ ] `scripts/medir.sh`: roda seq, OpenMP e MPI, grava os CSVs do contrato.
+- [x] `sequencial/gabarito.cpp` e os checksums de referência registrados em `docs/contrato.md`.
+- [x] `scripts/medir.sh`: roda seq, OpenMP e MPI, grava os CSVs do contrato (experimentos `baseline`, `forte`, `fraca`; a varredura de cutoff fica com a frente 2).
 - [ ] `scripts/graficos.py`: tempo, speedup e eficiência (forte), tempo (fraca), com a curva de Amdahl prevista sobreposta.
 - [ ] Texto da análise: real × Amdahl, e por que se afastam.
 
