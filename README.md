@@ -39,7 +39,19 @@ em casa, abra a pasta no VS Code e use F1 → **Dev Containers: Reopen in Contai
 ```bash
 make                          # compila tudo para bin/
 ./bin/mergesort_seq 20000000  # baseline: n=20000000  ordenado=SIM  tempo=...
+./bin/gabarito 20000000       # checksum de referência (docs/contrato.md)
 ```
+
+## Medições
+
+```bash
+bash scripts/medir.sh baseline   # baseline do professor em 5M, 20M e 80M
+bash scripts/medir.sh            # tudo: baseline, escalabilidade forte e fraca
+```
+
+Cada execução é validada (ordenado=SIM e checksum igual ao gabarito); a 1ª repetição de
+cada configuração é descartada. Os dados brutos ficam em `resultados/*.csv` e a
+descrição da máquina em `resultados/maquina.txt`.
 
 ## Validação de corretude
 
@@ -48,8 +60,12 @@ mesma entrada (semente fixa 12345), com qualquer número de threads/processos.
 
 ## Perfilamento
 
+Análise completa (perfil, tempo por nível da árvore e Lei de Amdahl) em
+[`docs/analise_baseline.md`](docs/analise_baseline.md).
+
 ```bash
 make perfil
 ./bin/mergesort_seq_pg 20000000
 gprof ./bin/mergesort_seq_pg gmon.out | head -20
+./bin/perfil_trechos 20000000     # tempo por trecho e por nível da árvore
 ```
