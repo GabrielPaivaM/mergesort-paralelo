@@ -4,7 +4,7 @@ Este arquivo é a fonte única da verdade para o que as três versões precisam 
 
 **Mudanças neste arquivo só por PR aprovado pelos três.**
 
-Status: **proposta** (a ser fechada na reunião da semana 1). Marque cada item como decidido ao fechar.
+Status: seções 2 e 3 **implementadas** em `comum/mergesort_comum.hpp` e `sequencial/gabarito.cpp` (frente 1, 05/11). Demais seções: proposta; marque cada item ao fechar.
 
 ## 1. Arquivos
 
@@ -22,15 +22,16 @@ graficos/*.png                 gráficos gerados
 
 ## 2. Código comum (`comum/mergesort_comum.hpp`)
 
-- [ ] `gerar_entrada(n)`: o **mesmo** gerador do baseline, linha por linha.
+- [x] `gerar_entrada(n)`: o **mesmo** gerador do baseline, linha por linha.
   ```cpp
   uint64_t s = 12345;
   for (int i = 0; i < n; i++) { s = s*6364136223846793005ULL + 1; a[i] = (int)(s >> 33); }
   ```
-- [ ] `merge(a, tmp, lo, mid, hi)` e `msort(a, tmp, lo, hi)`: copiados do baseline **sem alteração de lógica**.
-- [ ] `agora()`: `clock_gettime(CLOCK_MONOTONIC)`, como no baseline. (O MPI pode usar `MPI_Wtime()`; os dois medem tempo de parede.)
-- [ ] `checksum(a, n)`: definido na seção 3.
-- [ ] `verifica_ordenado(a, n)`: mesmo teste do baseline.
+- [x] `merge(a, tmp, lo, mid, hi)` e `msort(a, tmp, lo, hi)`: copiados do baseline **sem alteração de lógica**.
+- [x] `agora()`: `clock_gettime(CLOCK_MONOTONIC)`, como no baseline. (O MPI pode usar `MPI_Wtime()`; os dois medem tempo de parede.)
+- [x] `checksum(a)`: definido na seção 3.
+- [x] `verifica_ordenado(a)`: mesmo teste do baseline.
+- [x] `imprime_resultado(...)`: imprime a linha da seção 4, para ninguém montar o formato à mão.
 
 Por que um arquivo comum: se cada frente copiar o `merge` por conta própria, uma diferença de resultado pode vir de um erro de cópia e não da paralelização. Com um arquivo só, a única coisa que muda entre as versões é a parte paralela.
 
@@ -48,13 +49,13 @@ uint64_t checksum(const std::vector<int>& a) {
 
 - A soma em `uint64_t` dá a volta módulo 2⁶⁴. Isso é determinístico e a soma continua **associativa e comutativa**, então o resultado é o mesmo em qualquer ordem: pode ser calculado com `reduction(+:c)` no OpenMP ou com `MPI_Reduce` no MPI.
 - O valor de referência vem do `sequencial/gabarito.cpp`: mesma entrada, mesmo `msort`, imprime o checksum.
-- [ ] Gabarito registrado aqui para os tamanhos oficiais:
+- [x] Gabarito registrado aqui para os tamanhos oficiais (gerado por `./bin/gabarito N`, que também confere o resultado contra `std::sort`):
 
 | n | checksum de referência |
 |---|---|
-| 5000000 | _(preencher)_ |
-| 20000000 | _(preencher)_ |
-| 80000000 | _(preencher)_ |
+| 5000000 | 269323459739761654 |
+| 20000000 | 10891648454420413334 |
+| 80000000 | 12840250234082761083 |
 
 O cálculo do checksum fica **fora** do cronômetro, como a verificação do baseline.
 
