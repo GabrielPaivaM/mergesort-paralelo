@@ -1,6 +1,9 @@
-# Scripts e Makefiles rodam no Linux do contêiner: se o Git do Windows
-# converter para CRLF, o bash e o make quebram ("\r: command not found").
-*.sh      text eol=lf
-Makefile  text eol=lf
-*.cpp     text eol=lf
-*.py      text eol=lf
+# Todo arquivo de texto do projeto usa fim de linha LF (padrão Linux), em
+# qualquer sistema. Sem isto, o Git do Windows converte para CRLF ao clonar:
+# o bash e o make quebram ("\r: command not found") e, dentro do contêiner
+# Linux, o Git passa a ver todos os arquivos como "modificados".
+* text=auto eol=lf
+
+# Arquivos binários: nunca converter.
+*.png binary
+*.pdf binary
