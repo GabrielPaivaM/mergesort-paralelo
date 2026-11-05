@@ -1,6 +1,6 @@
 # Frente 3 — Versão MPI (memória distribuída)
 
-Responsável: _(nome)_ · Revisor dos seus PRs: frente 2 · Você revisa: frente 1 (scripts e análise)
+Responsável: Thiago PP · Revisor dos seus PRs: frente 2 (David Biage da Silva) · Você revisa: frente 1, scripts e análise (Marcelo)
 
 ## Objetivo
 

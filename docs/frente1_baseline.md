@@ -1,6 +1,6 @@
 # Frente 1 — Baseline, perfil e análise
 
-Responsável: _(nome)_ · Revisor dos seus PRs: frente 3 · Você revisa: frente 2 (OpenMP)
+Responsável: Marcelo (MarceloCPJunior) · Revisor dos seus PRs: frente 3 (Thiago PP) · Você revisa: frente 2, OpenMP (David Biage da Silva)
 
 ## Objetivo
 

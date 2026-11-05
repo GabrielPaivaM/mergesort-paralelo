@@ -4,6 +4,6 @@ Problema 07 — Ordenação (mergesort)
 
 | Integrante | Frente |
 |------------|--------|
-| _(nome)_   | Baseline e perfilamento |
-| _(nome)_   | Versão OpenMP (memória compartilhada) |
-| _(nome)_   | Versão MPI (memória distribuída) |
+| Marcelo (MarceloCPJunior) | Baseline e perfilamento |
+| David Biage da Silva | Versão OpenMP (memória compartilhada) |
+| Thiago PP | Versão MPI (memória distribuída) |
