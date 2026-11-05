@@ -62,15 +62,17 @@ static inline bool verifica_ordenado(const vector<int>& a) {
     return true;
 }
 
-// Checksum que depende do VALOR e da POSIÇÃO de cada elemento: soma de i*a[i].
+// Checksum que depende do VALOR e da POSIÇÃO de cada elemento: soma de (i+1)*a[i].
 // "ordenado=SIM" sozinho não detecta elementos perdidos ou duplicados; este
 // número detecta, porque o vetor ordenado é único para uma dada entrada.
+// O peso é i+1, e não i, para a posição 0 também contar: com peso i, trocar
+// a[0] por um valor menor deixaria o vetor ordenado e o checksum igual.
 // A soma em uint64_t "dá a volta" módulo 2^64 de propósito: isso é bem
 // definido em C++ e a soma continua associativa e comutativa, então o valor
 // é o mesmo em qualquer ordem (sequencial, reduction do OpenMP, MPI_Reduce).
 static inline uint64_t checksum(const vector<int>& a) {
     uint64_t c = 0;
-    for (size_t i = 0; i < a.size(); i++) c += (uint64_t)i * (uint64_t)(uint32_t)a[i];
+    for (size_t i = 0; i < a.size(); i++) c += (uint64_t)(i + 1) * (uint64_t)(uint32_t)a[i];
     return c;
 }
 

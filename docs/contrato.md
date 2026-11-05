@@ -37,25 +37,26 @@ Por que um arquivo comum: se cada frente copiar o `merge` por conta própria, um
 
 ## 3. Validação
 
-`ordenado=SIM` não basta: um vetor que perdeu ou duplicou elementos (erro típico de índice no MPI) ainda pode sair ordenado. Como o vetor ordenado é **único** para uma entrada, usamos um checksum que depende de **valor e posição**:
+`ordenado=SIM` não basta: um vetor que perdeu ou duplicou elementos (erro típico de índice no MPI) ainda pode sair ordenado. Como o vetor ordenado é **único** para uma entrada, usamos um checksum que depende de **valor e posição**, com peso `i + 1` (e não `i`) para que a posição 0 também conte:
 
 ```cpp
 uint64_t checksum(const std::vector<int>& a) {
     uint64_t c = 0;
-    for (size_t i = 0; i < a.size(); i++) c += (uint64_t)i * (uint64_t)(uint32_t)a[i];
+    for (size_t i = 0; i < a.size(); i++) c += (uint64_t)(i + 1) * (uint64_t)(uint32_t)a[i];
     return c;   // estoura e "dá a volta" módulo 2^64 — de propósito
 }
 ```
 
+- No MPI, o peso usa a posição **global** do elemento no vetor final, não a posição dentro do pedaço local.
 - A soma em `uint64_t` dá a volta módulo 2⁶⁴. Isso é determinístico e a soma continua **associativa e comutativa**, então o resultado é o mesmo em qualquer ordem: pode ser calculado com `reduction(+:c)` no OpenMP ou com `MPI_Reduce` no MPI.
 - O valor de referência vem do `sequencial/gabarito.cpp`: mesma entrada, mesmo `msort`, imprime o checksum.
 - [x] Gabarito registrado aqui para os tamanhos oficiais (gerado por `./bin/gabarito N`, que também confere o resultado contra `std::sort`):
 
 | n | checksum de referência |
 |---|---|
-| 5000000 | 269323459739761654 |
-| 20000000 | 10891648454420413334 |
-| 80000000 | 12840250234082761083 |
+| 5000000 | 274690690090403620 |
+| 20000000 | 10913123743811272712 |
+| 80000000 | 12926150509224156323 |
 
 O cálculo do checksum fica **fora** do cronômetro, como a verificação do baseline.
 
