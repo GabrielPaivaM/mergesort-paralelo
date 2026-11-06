@@ -49,8 +49,11 @@ bash scripts/validar.sh rapido   # segundos: n pequenos, p = 1 a 8
 bash scripts/validar.sh          # completo, inclui n = 1.000.003 e 20.000.003
 ```
 
-Confere, para cada n e p, se OpenMP e MPI dão o mesmo checksum do gabarito, incluindo os
-casos difíceis (n não divisível por p, n menor que p). Relatório em `resultados/validacao.md`.
+`ordenado=SIM` só garante a ordem. Toda versão imprime também um checksum do vetor ordenado
+(soma de valor × (posição + 1)), que tem de ser igual ao do gabarito para o mesmo n, com a mesma
+entrada (semente 12345) e qualquer número de threads ou processos (`docs/contrato.md`, seção 3).
+O `validar.sh` confere isso para vários n e p, incluindo os casos difíceis (n não divisível por p,
+n menor que p). Relatório em `resultados/validacao.md`.
 
 ## Medições
 
@@ -63,11 +66,6 @@ python3 scripts/graficos.py      # gráficos em graficos/ e tabela em resultados
 Cada execução é validada (ordenado=SIM e checksum igual ao gabarito); a 1ª repetição de
 cada configuração é descartada. Os dados brutos ficam em `resultados/*.csv` e a
 descrição da máquina em `resultados/maquina.txt`.
-
-## Validação de corretude
-
-O baseline imprime `ordenado=SIM`. As versões paralelas devem imprimir o mesmo, para a
-mesma entrada (semente fixa 12345), com qualquer número de threads/processos.
 
 ## Perfilamento
 
