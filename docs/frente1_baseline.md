@@ -13,6 +13,7 @@ Estabelecer o tempo de referência, mostrar onde o programa gasta tempo, prever 
 - [x] Estimativa de Amdahl com o modelo da árvore (aula 3) para p = 2, 4, 8 e o teto S(∞), teórica e com os tempos medidos por nível (`docs/analise_baseline.md`, seção 5).
 - [x] `sequencial/gabarito.cpp` e os checksums de referência registrados em `docs/contrato.md`.
 - [x] `scripts/medir.sh`: roda seq, OpenMP e MPI, grava os CSVs do contrato (experimentos `baseline`, `forte`, `fraca`; a varredura de cutoff fica com a frente 2).
+- [x] `scripts/validar.sh`: bateria de corretude (n pequenos, n não divisível por p, n < p, p = 1 a 8) com relatório em `resultados/validacao.md`.
 - [x] `scripts/graficos.py`: tempo, speedup e eficiência (forte), tempo (fraca), com a curva de Amdahl prevista sobreposta. Curvas de OpenMP e MPI aparecem quando houver dados.
 - [ ] Texto da análise: real × Amdahl, e por que se afastam.
 

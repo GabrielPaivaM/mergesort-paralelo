@@ -42,6 +42,16 @@ make                          # compila tudo para bin/
 ./bin/gabarito 20000000       # checksum de referência (docs/contrato.md)
 ```
 
+## Validação de corretude
+
+```bash
+bash scripts/validar.sh rapido   # segundos: n pequenos, p = 1 a 8
+bash scripts/validar.sh          # completo, inclui n = 1.000.003 e 20.000.003
+```
+
+Confere, para cada n e p, se OpenMP e MPI dão o mesmo checksum do gabarito, incluindo os
+casos difíceis (n não divisível por p, n menor que p). Relatório em `resultados/validacao.md`.
+
 ## Medições
 
 ```bash

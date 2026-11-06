@@ -45,9 +45,12 @@ Para intercalar dois blocos ordenados, coloque-os lado a lado num vetor e use o 
 ### 4. Validar
 ```bash
 make mpi
-for p in 1 2 3 4; do mpirun -np $p ./bin/mergesort_mpi 20000001; done
+bash scripts/validar.sh rapido     # segundos: n pequenos, p = 1 a 8
+bash scripts/validar.sh            # inclui n = 1.000.003 e 20.000.003
 ```
-Use também um `n` ímpar e `p = 3`: o checksum tem que ser igual ao gabarito em todos.
+O `validar.sh` testa os casos difíceis: n não divisível por p, n menor que p e p que não é
+potência de 2. Atenção: n ímpar **não** basta (20.000.001 é divisível por 3 e esconde o bug do
+`Scatter`); o que importa é `n % p ≠ 0`, e a bateria já cobre isso.
 
 ### 5. Separar comunicação de computação
 Cronometre separadamente os trechos de `Scatterv`, ordenação local e junção. Reporte o máximo entre os processos com `MPI_Reduce(..., MPI_MAX, ...)`.

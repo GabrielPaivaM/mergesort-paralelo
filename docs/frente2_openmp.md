@@ -44,8 +44,10 @@ msort_paralelo:
 ```bash
 make openmp
 for t in 1 2 4; do OMP_NUM_THREADS=$t ./bin/mergesort_omp 20000000 $t; done
+bash scripts/validar.sh rapido     # bateria de corretude: n pequenos, 1 a 8 threads
 ```
-O checksum tem que ser idêntico ao gabarito com qualquer número de threads.
+O checksum tem que ser idêntico ao gabarito com qualquer número de threads. Antes do PR, rode
+`bash scripts/validar.sh` completo.
 
 ### 5. Varredura do cutoff
 Com 4 threads e n = 20 M, teste cutoffs de 100 a 1.000.000 (potências de 10 e intermediários). Escolha pelo menor tempo e explique a forma da curva.
