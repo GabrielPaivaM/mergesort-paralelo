@@ -47,6 +47,7 @@ make                          # compila tudo para bin/
 ```bash
 bash scripts/medir.sh baseline   # baseline do professor em 5M, 20M e 80M
 bash scripts/medir.sh            # tudo: baseline, escalabilidade forte e fraca
+python3 scripts/graficos.py      # gráficos em graficos/ e tabela em resultados/resumo.md
 ```
 
 Cada execução é validada (ordenado=SIM e checksum igual ao gabarito); a 1ª repetição de
