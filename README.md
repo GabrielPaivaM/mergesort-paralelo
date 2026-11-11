@@ -5,6 +5,16 @@ Programação Paralela · IESB 2026/2 · Prof. Rodrigo Gonçalves
 Paralelização do mergesort sequencial de referência (`07_mergesort.cpp`, fornecido pelo professor)
 em memória compartilhada (OpenMP) e memória distribuída (MPI).
 
+## Documentação
+
+| Documento | Conteúdo |
+|---|---|
+| [`docs/analise_baseline.md`](docs/analise_baseline.md) | Complexidade, perfil e previsão de Amdahl (frente 1) |
+| [`docs/analise_experimental.md`](docs/analise_experimental.md) | Análise final: speedup medido × previsto, escalabilidade forte e fraca |
+| [`docs/contrato.md`](docs/contrato.md) | Regras comuns às versões e checksums de referência |
+| [`docs/revisao_arguicao.md`](docs/revisao_arguicao.md) | Perguntas prováveis da arguição, com respostas |
+| [`AUTORES.md`](AUTORES.md) | Frente de cada integrante |
+
 ## Organização do trio
 
 Comece por [`ORGANIZACAO.md`](ORGANIZACAO.md) (papéis, fluxo de Git, cronograma) e pelo
@@ -18,12 +28,12 @@ mergesort-paralelo/
 ├── .devcontainer/ ambiente da disciplina (VS Code → Reopen in Container)
 ├── sequencial/    baseline do professor (cópia sem alteração de lógica) e gabarito
 ├── comum/         código compartilhado por OpenMP e MPI (docs/contrato.md)
-├── openmp/        versão OpenMP              (Marco 2 — a fazer)
-├── mpi/           versão MPI                 (Marco 2 — a fazer)
-├── scripts/       coleta de tempos em CSV e geração de gráficos
-├── resultados/    CSVs gerados pelos scripts
+├── openmp/        versão OpenMP
+├── mpi/           versão MPI
+├── scripts/       validar.sh (corretude), medir.sh (tempos em CSV), graficos.py
+├── resultados/    CSVs, resumo de speedup, relatório de validação, máquina usada
 ├── graficos/      gráficos de tempo, speedup e eficiência
-├── docs/          contrato comum e guia de cada frente
+├── docs/          contrato comum, análises, guia de cada frente
 ├── Makefile
 ├── ORGANIZACAO.md guia do trio
 ├── AGENTS.md      instruções para ferramentas de IA
@@ -37,10 +47,24 @@ em casa, abra a pasta no VS Code e use F1 → **Dev Containers: Reopen in Contai
 (requer Docker Desktop e a extensão Dev Containers).
 
 ```bash
+git clone https://github.com/MarceloCPJunior/mergesort-paralelo.git
+cd mergesort-paralelo
 make                          # compila tudo para bin/
 ./bin/mergesort_seq 20000000  # baseline: n=20000000  ordenado=SIM  tempo=...
 ./bin/gabarito 20000000       # checksum de referência (docs/contrato.md)
 ```
+
+Do zero até os gráficos, em quatro comandos:
+
+```bash
+make                             # compila (-O2)
+bash scripts/validar.sh          # 1. as versões dão o resultado do baseline?  (resultados/validacao.md)
+bash scripts/medir.sh            # 2. tempos com repetição e mediana           (resultados/*.csv)
+python3 scripts/graficos.py      # 3. gráficos e tabela de speedup              (graficos/, resultados/resumo.md)
+```
+
+Use `bash scripts/...` (e não `./scripts/...`): clones feitos no Windows podem perder a
+permissão de execução dos arquivos.
 
 ## Validação de corretude
 

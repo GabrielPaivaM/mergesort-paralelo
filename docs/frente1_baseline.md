@@ -15,7 +15,7 @@ Estabelecer o tempo de referência, mostrar onde o programa gasta tempo, prever 
 - [x] `scripts/medir.sh`: roda seq, OpenMP e MPI, grava os CSVs do contrato (experimentos `baseline`, `forte`, `fraca`; a varredura de cutoff fica com a frente 2).
 - [x] `scripts/validar.sh`: bateria de corretude (n pequenos, n não divisível por p, n < p, p = 1 a 8) com relatório em `resultados/validacao.md`.
 - [x] `scripts/graficos.py`: tempo, speedup e eficiência (forte), tempo (fraca), com a curva de Amdahl prevista sobreposta. Curvas de OpenMP e MPI aparecem quando houver dados.
-- [ ] Texto da análise: real × Amdahl, e por que se afastam.
+- [ ] Texto da análise: real × Amdahl, e por que se afastam. *(esqueleto pronto em `docs/analise_experimental.md`; falta preencher com a medição final, que depende do OpenMP e do MPI)*
 
 ## Passo a passo
 
@@ -63,15 +63,23 @@ pandas + matplotlib. Agrupe por `(versao, n, p)` e use a **mediana**. Gráficos 
 3. eficiência × p;
 4. tempo × p na escalabilidade fraca.
 
-## Decisões a justificar (escreva aqui as respostas)
+## Decisões e justificativas
 
 | Decisão | Escolha | Por quê |
 |---|---|---|
-| Número de repetições | | |
-| Mediana ou média | | |
-| Tamanhos de n | | |
-| Flags do perfil | | |
-| Por que T₁ é o baseline e não a versão paralela com 1 thread | | |
+| Número de repetições | 5 por configuração, descartando a 1ª | Um tempo é uma observação com ruído (medimos ~5–10% de variação entre execuções iguais). A 1ª pode pegar a CPU em baixa frequência ou a cache fria; descartá-la é um seguro barato |
+| Mediana ou média | Mediana das 4 restantes | Uma execução isolada atrapalhada pelo sistema (ex.: atualização em segundo plano) puxa a média, mas não muda a mediana |
+| Tamanhos de n | 5 M, 20 M e 80 M (fatores de 4) | O enunciado pede pelo menos três; fatores iguais deixam ver o crescimento n·log n (medido: ~4,3× a cada ×4). 20 M é o n da escalabilidade forte; 5 M é a base da fraca |
+| Trecho cronometrado | Só a ordenação (`msort`) | É o que o baseline do professor cronometra; todas as versões medem o mesmo trecho. No MPI, distribuir e juntar os dados entra, porque é custo de paralelizar |
+| Relógio | `clock_gettime(CLOCK_MONOTONIC)` | Só anda para frente; ajustes do relógio do sistema não estragam a medida |
+| Compilação | `-O2 -Wall` para tudo, via Makefile | Sem otimização o código fica ~4× mais lento (medido) e o speedup sai inflado; `-Wall` mostra todos os avisos |
+| T₁ do speedup | Tempo do baseline do professor | A versão paralela com 1 thread carrega o custo do runtime; usá-la como referência inflaria o speedup |
+| p testados na medição | 1, 2, 4, 8… só até `nproc` | Acima disso as threads dividem núcleos e o tempo piora por motivo alheio ao algoritmo |
+| Validação | Checksum Σ (i+1)·a[i] em `uint64_t`, comparado ao gabarito em toda execução | `ordenado=SIM` não detecta elementos perdidos ou duplicados. O peso de posição pega trocas e erros que se compensam; i+1 evita o ponto cego da posição 0; inteiro sem sinal dá o mesmo valor em qualquer ordem de soma (`double` não daria) |
+| Confiança no gabarito | Mesmo algoritmo do professor + comparação completa com `std::sort` | Duas ordenações independentes que concordam posição por posição |
+| Código comum | `comum/mergesort_comum.hpp`, conferido com `diff` contra o baseline | O arquivo do professor tem `main` e não pode ser incluído nem alterado; copiar o `merge` em cada versão arriscaria divergências |
+| Flags do perfil | `-pg` com inlining de funções inteiras e clones (IPA) desligados, mas sem `-fno-inline` | O `-O2` cola o `merge` dentro do `msort` e o gprof erraria a atribuição; `-fno-inline` também desligaria o inlining de `vector::operator[]` e mediria um programa ~2× mais lento |
+| Bateria de corretude | `validar.sh` com n = 1…1000, 1.000.003 e 20.000.003, p = 1…8 | Os bugs de divisão se escondem em n divisível por p; esses n não são divisíveis por nenhum p de 2 a 8, e n < p testa processos sem elementos |
 
 ## Armadilhas
 
