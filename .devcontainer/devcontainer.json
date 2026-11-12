@@ -2,6 +2,9 @@
   "name": "Programacao Paralela CCO085",
   "build": { "dockerfile": "Dockerfile" },
   "remoteUser": "root",
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": { "version": "latest" }
+  },
   "customizations": {
     "vscode": {
       "extensions": ["ms-vscode.cpptools"]
