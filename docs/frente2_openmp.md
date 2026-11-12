@@ -1,6 +1,6 @@
 # Frente 2 — Versão OpenMP (memória compartilhada)
 
-Responsável: David Biage da Silva · Revisor dos seus PRs: frente 1 (Marcelo) · Você revisa: frente 3, MPI (Thiago PP)
+Responsáveis: David Biage da Silva e Thiago PP · Revisor dos seus PRs: frente 1 (Marcelo) · Vocês revisam: frente 3, MPI (Gabriel Paiva)
 
 ## Objetivo
 
